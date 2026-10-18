@@ -1,0 +1,762 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reto del Escudo Científico</title>
+
+<style>
+:root {
+  --verde: #174f40;
+  --verde-claro: #28765b;
+  --crema: #fffbea;
+  --texto: #183c32;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #eaf3d9, #cfe5cb);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+}
+
+.juego {
+  width: min(950px, 100%);
+  background: var(--crema);
+  border: 3px solid var(--verde);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px #173d3024;
+}
+
+header {
+  background: var(--verde);
+  color: white;
+  text-align: center;
+  padding: 25px 18px;
+}
+
+.icono {
+  font-size: 42px;
+}
+
+h1 {
+  margin: 8px 0;
+  font-size: clamp(1.7rem, 5vw, 2.7rem);
+}
+
+header p {
+  color: #e1efce;
+  margin-bottom: 0;
+}
+
+main {
+  padding: clamp(18px, 4vw, 36px);
+}
+
+.progreso {
+  height: 9px;
+  background: #e3ead8;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 26px;
+}
+
+#barra {
+  height: 100%;
+  width: 0;
+  background: #9ac85d;
+  transition: width 0.3s;
+}
+
+.pantalla {
+  display: none;
+}
+
+.pantalla.activa {
+  display: block;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+h2 {
+  color: var(--verde);
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin-top: 0;
+}
+
+p {
+  line-height: 1.55;
+}
+
+.etiqueta {
+  color: var(--verde-claro);
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.consejo {
+  background: #e8f0d8;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 18px 0;
+}
+
+button,
+.enlace {
+  border: none;
+  border-radius: 12px;
+  background: var(--verde);
+  color: white;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  margin-top: 12px;
+}
+
+button:hover,
+.enlace:hover {
+  background: var(--verde-claro);
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin: 16px 0 8px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 13px;
+  border: 2px solid #cbd9c2;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+input[type="file"] {
+  max-width: 100%;
+  margin: 5px 0;
+}
+
+.zona {
+  min-height: 300px;
+  border: 2px dashed #5d9076;
+  border-radius: 17px;
+  background: #fffef6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 18px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.zona.arrastrando {
+  background: #e9f3db;
+  border-color: var(--verde);
+}
+
+.simbolo {
+  display: block;
+  font-size: 56px;
+  margin-bottom: 10px;
+}
+
+.vista-previa {
+  max-width: 100%;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.oculto {
+  display: none !important;
+}
+
+.ayuda {
+  font-size: 0.9rem;
+  color: #587064;
+}
+
+.error {
+  color: #a2322a;
+  font-weight: bold;
+  min-height: 1.3em;
+}
+
+.lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.tarjeta {
+  background: #eef3e5;
+  border: 1px solid #d6e4ca;
+  border-radius: 12px;
+  padding: 12px;
+  overflow-wrap: anywhere;
+}
+
+.tarjeta small {
+  display: block;
+  color: #5a7463;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.tarjeta img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  margin-top: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+footer {
+  text-align: center;
+  color: #718273;
+  border-top: 1px solid #e1e8d9;
+  padding: 14px;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 680px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .zona {
+    min-height: 220px;
+  }
+
+  .lista {
+    grid-template-columns: 1fr;
+  }
+
+  button,
+  .enlace {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="juego">
+
+<header>
+  <div class="icono">🛡️ ⚛️ 🌱</div>
+  <h1>RETO DEL ESCUDO CIENTÍFICO</h1>
+  <p>Cinco científicos, cinco escudos y una votación para elegir al ganador.</p>
+</header>
+
+<main>
+
+<div class="progreso">
+  <div id="barra"></div>
+</div>
+
+<!-- PANTALLA DE INICIO -->
+<section class="pantalla activa" id="inicio">
+  <div class="columnas">
+    <div>
+      <p class="etiqueta">Misión de equipo</p>
+      <h2>¡Diseñad vuestro escudo científico!</h2>
+
+      <p>
+        Cada uno de los cinco científicos presentará
+        una imagen de un escudo inventado y diseñado en Canva.
+      </p>
+
+      <div class="consejo">
+        💡 Diseñad vuestro escudo en Canva y guardadlo
+        como imagen JPG o JPEG. También se admite PNG.
+      </div>
+
+      <button type="button" onclick="comenzar()">
+        Comenzar el reto →
+      </button>
+    </div>
+
+    <div class="zona" style="cursor:default">
+      <div>
+        <span class="simbolo">🛡️</span>
+        <strong>¡Imaginación científica!</strong>
+        <p class="ayuda">
+          Ciencia, naturaleza, creatividad y colaboración.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TURNO DE CADA CIENTÍFICO -->
+<section class="pantalla" id="turno">
+
+  <p class="etiqueta" id="numeroTurno">Turno 1 de 5</p>
+  <h2 id="tituloTurno">Científico 1: presenta tu escudo</h2>
+
+  <p>
+    Copia la imagen de Canva y pégala con
+    <strong>Ctrl + V</strong> (o <strong>⌘ + V</strong> en Mac).
+    También puedes seleccionar la imagen desde tu dispositivo.
+  </p>
+
+  <div class="columnas">
+
+    <div>
+      <label for="nombre">Nombre del científico</label>
+      <input
+        type="text"
+        id="nombre"
+        maxlength="50"
+        placeholder="Escribe tu nombre"
+      >
+
+      <label for="archivo">
+        Selecciona una imagen JPG, JPEG o PNG
+      </label>
+
+      <input
+        type="file"
+        id="archivo"
+        accept="image/jpeg,image/png,.jpg,.jpeg,.png"
+      >
+
+      <p class="ayuda">
+        Si no puedes pegar la imagen, utiliza el selector de archivos.
+      </p>
+
+      <div class="error" id="error" role="alert"></div>
+
+      <button type="button" onclick="aceptar()">
+        Aceptar y continuar ✓
+      </button>
+    </div>
+
+    <div>
+      <div
+        class="zona"
+        id="zonaImagen"
+        tabindex="0"
+        role="button"
+        aria-label="Pegar, arrastrar o seleccionar imagen"
+      >
+        <div id="mensajeZona">
+          <span class="simbolo">🖼️</span>
+          <strong>Pega aquí la imagen del escudo</strong>
+          <p class="ayuda">
+            Ctrl + V · Arrastra una imagen aquí
+          </p>
+        </div>
+
+        <img
+          id="vistaPrevia"
+          class="vista-previa oculto"
+          alt="Vista previa del escudo científico"
+        >
+      </div>
+
+      <p class="ayuda">
+        La imagen se conserva en esta página mientras dura la actividad.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- PANTALLA DE VOTACIÓN -->
+<section class="pantalla" id="votacion">
+  <p class="etiqueta">¡Decisión de equipo!</p>
+  <h2>Votad por vuestro escudo favorito</h2>
+  <p>Observad los cinco diseños y elegid el que más os guste. Cada participante emite un único voto. Los votos se confirman de uno en uno en el mismo dispositivo.</p>
+  <div class="lista" id="opcionesVoto"></div>
+  <p class="ayuda" id="estadoVotos">Votante 1 de 5 · Votos emitidos: 0 de 5</p>
+  <div class="error" id="errorVoto" role="alert"></div>
+  <button type="button" id="botonVotar" onclick="emitirVoto()">Confirmar mi voto ✓</button>
+  <button type="button" id="botonSiguienteVotante" class="oculto" onclick="siguienteVotante()">Siguiente votante →</button>
+</section>
+
+<!-- PANTALLA FINAL -->
+<section class="pantalla" id="final">
+
+  <p class="etiqueta">¡Misión cumplida!</p>
+  <h2>¡Habéis completado el reto!</h2>
+
+  <p>
+    Los cinco científicos han presentado sus escudos.
+    Votad entre todos para elegir vuestro escudo favorito.
+  </p>
+
+  <div class="consejo" id="escudoGanador"></div>
+  <h2>Galería de los cinco escudos</h2>
+  <div class="lista" id="galeria"></div>
+
+  <div class="consejo">
+    🏆 <strong>¡Enhorabuena, equipo científico!</strong>
+    Habéis completado el Reto del Escudo Científico.
+  </div>
+
+  <div id="siguiente"></div>
+
+</section>
+
+</main>
+
+<footer>
+  La ciencia se hace en equipo 🌍
+</footer>
+
+</div>
+
+<script>
+
+// ENLACE AL SIGUIENTE GENIALLY
+const ENLACE_SIGUIENTE =
+  "https://view.genially.com/6ad3f645bb9c11c602c537d1";
+
+let numero = 0;
+let imagenActual = null;
+let escudos = [];
+let votos = [];
+let votanteActual = 0;
+let opcionSeleccionada = null;
+
+const elemento = id => document.getElementById(id);
+
+function mostrarPantalla(id, progreso) {
+  document.querySelectorAll(".pantalla").forEach(p => {
+    p.classList.remove("activa");
+  });
+
+  elemento(id).classList.add("activa");
+  elemento("barra").style.width = progreso + "%";
+}
+
+function comenzar() {
+  numero = 0;
+  escudos = [];
+  votos = [];
+  prepararTurno();
+}
+
+function prepararTurno() {
+  imagenActual = null;
+
+  elemento("nombre").value = "";
+  elemento("archivo").value = "";
+  elemento("vistaPrevia").src = "";
+
+  elemento("vistaPrevia").classList.add("oculto");
+  elemento("mensajeZona").classList.remove("oculto");
+  elemento("error").textContent = "";
+
+  elemento("numeroTurno").textContent =
+    "Turno " + (numero + 1) + " de 5";
+
+  elemento("tituloTurno").textContent =
+    "Científico " + (numero + 1) + ": presenta tu escudo";
+
+  mostrarPantalla("turno", numero * 25);
+  elemento("nombre").focus();
+}
+
+function cargarImagen(archivo) {
+  if (!archivo) return;
+
+  const valido =
+    ["image/jpeg", "image/png"].includes(archivo.type) ||
+    /\.(jpe?g|png)$/i.test(archivo.name);
+
+  if (!valido) {
+    elemento("error").textContent =
+      "Selecciona una imagen JPG, JPEG o PNG.";
+    return;
+  }
+
+  const lector = new FileReader();
+
+  lector.onload = function(evento) {
+    imagenActual = evento.target.result;
+
+    elemento("vistaPrevia").src = imagenActual;
+    elemento("vistaPrevia").classList.remove("oculto");
+    elemento("mensajeZona").classList.add("oculto");
+    elemento("error").textContent = "";
+  };
+
+  lector.onerror = function() {
+    elemento("error").textContent =
+      "No se ha podido leer la imagen. Inténtalo de nuevo.";
+  };
+
+  lector.readAsDataURL(archivo);
+}
+
+elemento("archivo").addEventListener("change", function(evento) {
+  cargarImagen(evento.target.files[0]);
+});
+
+elemento("zonaImagen").addEventListener("click", function() {
+  elemento("archivo").click();
+});
+
+elemento("zonaImagen").addEventListener("keydown", function(evento) {
+  if (evento.key === "Enter" || evento.key === " ") {
+    evento.preventDefault();
+    elemento("archivo").click();
+  }
+});
+
+// PEGAR UNA IMAGEN COPIADA
+document.addEventListener("paste", function(evento) {
+  if (!elemento("turno").classList.contains("activa")) return;
+
+  const items = evento.clipboardData &&
+                evento.clipboardData.items;
+
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type && item.type.startsWith("image/")) {
+      const archivo = item.getAsFile();
+
+      if (archivo) {
+        cargarImagen(archivo);
+        evento.preventDefault();
+        return;
+      }
+    }
+  }
+});
+
+// ARRASTRAR Y SOLTAR LA IMAGEN
+const zona = elemento("zonaImagen");
+
+zona.addEventListener("dragover", function(evento) {
+  evento.preventDefault();
+  zona.classList.add("arrastrando");
+});
+
+zona.addEventListener("dragleave", function() {
+  zona.classList.remove("arrastrando");
+});
+
+zona.addEventListener("drop", function(evento) {
+  evento.preventDefault();
+  zona.classList.remove("arrastrando");
+
+  if (evento.dataTransfer.files[0]) {
+    cargarImagen(evento.dataTransfer.files[0]);
+  }
+});
+
+function aceptar() {
+  const nombre = elemento("nombre").value.trim();
+
+  if (!nombre) {
+    elemento("error").textContent =
+      "Escribe tu nombre antes de continuar.";
+    elemento("nombre").focus();
+    return;
+  }
+
+  if (!imagenActual) {
+    elemento("error").textContent =
+      "Pega o selecciona la imagen de tu escudo antes de aceptar.";
+    return;
+  }
+
+  escudos.push({
+    nombre: nombre,
+    imagen: imagenActual
+  });
+
+  numero++;
+
+  if (numero < 5) {
+    prepararTurno();
+  } else {
+    prepararVotacion();
+  }
+}
+
+function prepararVotacion() {
+  votanteActual = 0;
+  votos = [];
+  opcionSeleccionada = null;
+  const opciones = elemento("opcionesVoto");
+  opciones.replaceChildren();
+
+  escudos.forEach(function(escudo, indice) {
+    const tarjeta = document.createElement("label");
+    tarjeta.className = "tarjeta";
+    tarjeta.style.cursor = "pointer";
+    tarjeta.style.display = "block";
+
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "votoEscudo";
+    radio.value = String(indice);
+    radio.addEventListener("change", function() {
+      opcionSeleccionada = indice;
+      elemento("errorVoto").textContent = "";
+    });
+
+    const nombre = document.createElement("strong");
+    nombre.textContent = " " + escudo.nombre;
+
+    const imagen = document.createElement("img");
+    imagen.src = escudo.imagen;
+    imagen.alt = "Escudo de " + escudo.nombre;
+
+    tarjeta.appendChild(radio);
+    tarjeta.appendChild(nombre);
+    tarjeta.appendChild(imagen);
+    opciones.appendChild(tarjeta);
+  });
+
+  actualizarPantallaVotacion();
+  mostrarPantalla("votacion", 85);
+}
+
+function actualizarPantallaVotacion() {
+  elemento("estadoVotos").textContent =
+    "Votante " + (votanteActual + 1) + " de 5 · Votos emitidos: " + votos.length + " de 5";
+  elemento("errorVoto").textContent = "";
+  elemento("botonVotar").classList.remove("oculto");
+  elemento("botonSiguienteVotante").classList.add("oculto");
+  opcionSeleccionada = null;
+  document.querySelectorAll('input[name="votoEscudo"]').forEach(function(radio) {
+    radio.checked = false;
+    radio.disabled = false;
+  });
+}
+
+function emitirVoto() {
+  if (opcionSeleccionada === null) {
+    elemento("errorVoto").textContent = "Selecciona un escudo antes de confirmar el voto.";
+    return;
+  }
+
+  votos.push(opcionSeleccionada);
+  document.querySelectorAll('input[name="votoEscudo"]').forEach(function(radio) {
+    radio.disabled = true;
+  });
+  elemento("botonVotar").classList.add("oculto");
+
+  if (votos.length < 5) {
+    elemento("estadoVotos").textContent =
+      "Voto registrado. Votos emitidos: " + votos.length + " de 5.";
+    elemento("botonSiguienteVotante").classList.remove("oculto");
+  } else {
+    mostrarResultado();
+  }
+}
+
+function siguienteVotante() {
+  votanteActual++;
+  actualizarPantallaVotacion();
+}
+
+function mostrarResultado() {
+  const recuento = escudos.map(function(escudo, indice) {
+    return votos.filter(function(voto) { return voto === indice; }).length;
+  });
+  const maxVotos = Math.max.apply(null, recuento);
+  const ganadores = recuento
+    .map(function(total, indice) { return total === maxVotos ? indice : -1; })
+    .filter(function(indice) { return indice !== -1; });
+  const ganador = escudos[ganadores[0]];
+  const zonaGanador = elemento("escudoGanador");
+  zonaGanador.replaceChildren();
+
+  const tituloGanador = document.createElement("h2");
+  tituloGanador.textContent = ganadores.length > 1 ? "🤝 ¡Empate en la votación!" : "🏆 ¡El escudo ganador!";
+  const nombreGanador = document.createElement("p");
+  nombreGanador.textContent = ganadores.length > 1
+    ? "Hay empate con " + maxVotos + " voto(s) por escudo. Se muestra uno de los escudos empatados; podéis decidir entre vosotros cuál elegir."
+    : ganador.nombre + " · " + maxVotos + (maxVotos === 1 ? " voto" : " votos");
+  zonaGanador.appendChild(tituloGanador);
+  zonaGanador.appendChild(nombreGanador);
+
+  const imagenGanadora = document.createElement("img");
+  imagenGanadora.src = ganador.imagen;
+  imagenGanadora.alt = "Escudo ganador de " + ganador.nombre;
+  imagenGanadora.style.display = "block";
+  imagenGanadora.style.maxWidth = "100%";
+  imagenGanadora.style.maxHeight = "380px";
+  imagenGanadora.style.objectFit = "contain";
+  imagenGanadora.style.margin = "12px auto";
+  zonaGanador.appendChild(imagenGanadora);
+
+  const galeria = elemento("galeria");
+  galeria.replaceChildren();
+
+  escudos.forEach(function(escudo, indice) {
+    const tarjeta = document.createElement("div");
+    tarjeta.className = "tarjeta";
+
+    const etiqueta = document.createElement("small");
+    etiqueta.textContent = "CIENTÍFICO " + (indice + 1);
+
+    const nombre = document.createElement("strong");
+    nombre.textContent = escudo.nombre + " · " + recuento[indice] + (recuento[indice] === 1 ? " voto" : " votos");
+
+    const imagen = document.createElement("img");
+    imagen.src = escudo.imagen;
+    imagen.alt = "Escudo científico de " + escudo.nombre;
+
+    tarjeta.appendChild(etiqueta);
+    tarjeta.appendChild(nombre);
+    tarjeta.appendChild(imagen);
+
+    galeria.appendChild(tarjeta);
+  });
+
+  // CREAR EL BOTÓN PARA ABRIR EL GENIALLY
+  const siguiente = elemento("siguiente");
+  siguiente.replaceChildren();
+
+  const enlace = document.createElement("a");
+  enlace.className = "enlace";
+  enlace.href = ENLACE_SIGUIENTE;
+  enlace.textContent = "Ir al siguiente reto →";
+  enlace.target = "_blank";
+  enlace.rel = "noopener";
+
+  siguiente.appendChild(enlace);
+
+  mostrarPantalla("final", 100);
+}
+
+</script>
+
+</body>
+</html>
